@@ -78,6 +78,13 @@ Resources:
       HostedZoneId: Z0455587QPN9KHP9CHH1
       Name: dance-party.rossreicks.com
       Type: A
-      ResourceRecords:
-        - !GetAtt CloudFront.DomainName
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: 
+          !Join
+            - ''
+            - 
+              - !GetAtt S3Bucket.DomainName
+              - '.'
+
           
