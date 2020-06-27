@@ -18,6 +18,29 @@ Resources:
     Properties: 
       BucketName: reicksross-dance-party-static-content
 
+  BucketPolicy: 
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: 
+        Ref: S3Bucket
+      PolicyDocument: 
+        Statement: 
+          - 
+            Action: 
+              - "s3:GetObject"
+            Effect: "Allow"
+            Resource: 
+              Fn::Join: 
+                - ""
+                - 
+                  - "arn:aws:s3:::"
+                  - 
+                    Ref: S3Bucket
+                  - "/*"
+            Principal:
+              AWS: !Ref CloudFrontOriginAccessIdentity  
+          
+
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
