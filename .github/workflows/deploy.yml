@@ -42,11 +42,11 @@ jobs:
       with:
         node-version: 10.x
 
-    - name: install deps
+    - name: Install deps
       working-directory: ./sites/admin
       run: npm install
 
-    - name: build deployment package
+    - name: Build Angular Site
       working-directory: ./sites/admin
       run: npm run build:prod
 
@@ -57,11 +57,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    - name: Run CF Deploy
-      uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
-      with: 
-        name: dance-party
-        template: cloudformation/template.yml
+    - name: CF Deploy
+      run: aws cloudformation deploy --template-file ./cloudformation/template.yml --stack-name dance-party --no-fail-on-empty-changeset
     
     - name: Upload site to s3
       run: aws s3 sync ./sites/admin/dist s3://reicksross-dance-party-static-content --delete
