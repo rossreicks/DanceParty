@@ -71,4 +71,13 @@ Resources:
             Id: s3-bucket
             S3OriginConfig:
               OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: Z0455587QPN9KHP9CHH1
+      Name: dance-party.rossreicks.com
+      Type: A
+       ResourceRecords:
+        - !GetAtt CloudFront.DomainName
           

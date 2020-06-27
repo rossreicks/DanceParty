@@ -43,11 +43,11 @@ jobs:
         node-version: 10.x
 
     - name: Install deps
-      working-directory: ./sites/admin
+      working-directory: ./sites/dance-party
       run: npm install
 
     - name: Build Angular Site
-      working-directory: ./sites/admin
+      working-directory: ./sites/dance-party
       run: npm run build:prod
 
     - name: Configure AWS credentials
@@ -61,5 +61,5 @@ jobs:
       run: aws cloudformation deploy --template-file ./cloudformation/template.yml --stack-name dance-party --no-fail-on-empty-changeset
     
     - name: Upload site to s3
-      run: aws s3 sync ./sites/admin/dist/admin s3://reicksross-dance-party-static-content --delete
+      run: aws s3 sync ./sites/dance-party/dist/dance-party s3://reicksross-dance-party-static-content --delete
       
