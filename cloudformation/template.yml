@@ -31,6 +31,17 @@ Resources:
         Enabled: True
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
+        DefaultCacheBehavior:
+          TargetOriginId: s3-bucket
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: True
         Origins:
           -
             DomainName: !GetAtt S3Bucket.DomainName
