@@ -33,7 +33,7 @@ Resources:
         PriceClass: PriceClass_100
         Origins:
           -
-            DomainName: !Sub ${S3Bucket}.s3.${AWS::Region}.amazonaws.com
+            DomainName: !GetAtt S3Bucket.DomainName
             Id: s3-bucket
             S3OriginConfig:
               OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
