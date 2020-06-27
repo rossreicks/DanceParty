@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dance Party Stack
+Resources:
+  QueueRequestLambda:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Handler: index.handler
+      FunctionName: dance-party-queue-request
+      Role: !Sub arn:aws:iam::${AWS.AccountId}:role/dance-party-lambda-role
+      Runtime: nodejs12.x
+      Timeout: 5
+      Code: 
+        ZipFile: |
+          exports.handler = function(event, context) { console.log("hello lambda") }
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: reicksross-dance-party-static-content
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: oid to connect to s3
+
+  CloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: True
+        DefaultRootObject: index.html
+        PriceClass: PriceClass_100
+        Origins:
+          S3OriginConfig:
+            OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+          
