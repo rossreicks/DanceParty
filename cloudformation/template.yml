@@ -6,7 +6,7 @@ Resources:
     Properties: 
       Handler: index.handler
       FunctionName: dance-party-queue-request
-      Role: !Sub arn:aws:iam::${AWS.AccountId}:role/dance-party-lambda-role
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Timeout: 5
       Code: 
