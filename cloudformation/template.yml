@@ -32,6 +32,7 @@ Resources:
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
         Origins:
-          S3OriginConfig:
-            OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+          -
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
           
