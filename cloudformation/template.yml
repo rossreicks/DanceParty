@@ -38,7 +38,7 @@ Resources:
                     Ref: S3Bucket
                   - "/*"
             Principal:
-              AWS: !Ref CloudFrontOriginAccessIdentity  
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
           
 
   CloudFrontOriginAccessIdentity:
