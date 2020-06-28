@@ -1,3 +1,7 @@
+const AWS = require('aws-sdk');
+const axios = require('axios');
+const qs = require('qs');
+
 exports.handler = async event => {
   // authenticate to spotify api
   const clientid = process.env.CLIENT_ID;
