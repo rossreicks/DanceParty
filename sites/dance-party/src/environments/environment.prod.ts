@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  spotify_redirect_url: 'https://dance-party.rossreicks.com/owner'
 };

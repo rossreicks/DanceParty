@@ -1,5 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Dance Party Stack
+Parameters:
+  DomainName:
+    Type: String
+    Default: dance-party.rossreicks.com
 Resources:
   QueueRequestLambda:
     Type: AWS::Lambda::Function
@@ -52,6 +56,8 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: True
+        Aliases:
+          - !Ref DomainName
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
         DefaultCacheBehavior:
@@ -76,7 +82,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: Z0455587QPN9KHP9CHH1
-      Name: dance-party.rossreicks.com
+      Name: !Ref DomainName
       Type: A
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
@@ -84,7 +90,7 @@ Resources:
           !Join
             - ''
             - 
-              - !GetAtt S3Bucket.DomainName
+              - !GetAtt CloudFront.DomainName
               - '.'
 
           
