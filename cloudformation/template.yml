@@ -99,7 +99,7 @@ Resources:
   Certificate:
     Type: AWS::CertificateManager::Certificate
     Properties: 
-      DomainName: *.rossreicks.com
+      DomainName: !Ref DomainName
       ValidationMethod: DNS
 
           
