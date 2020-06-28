@@ -1,9 +1,24 @@
-<section class="section">
-    <div class="tile is-vertical is-4">
-        <h3>Logged into spotify as {{userData?.email}}</h3>
+<section class="d-flex">
+  <div class="flex-shrink-1 main-pane">
+    <img class="qrcode" *ngIf="imageUrl" [src]="imageUrl" alt="">
+  </div>
+  <div class="flex-grow-1 main-pane">
+    <div class="d-flex flex-column">
+      <div class="d-flex justify-content-center">
+        <h1>Party Name Here </h1>
+        <i class="fa-sm fa fa-pencil-alt"></i>
+      </div>
+      <div class="d-flex flex-column justify-content-start">
+        <ul>
+          <li *ngFor="let item of queue" class="d-flex">
+            <img class="artwork" [src]="item.artwork" alt="" height="64" width="64">
+            <div class="d-flex flex-column">
+              <h5>{{item.name}}</h5>
+              <p>{{item.artist}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-    <!-- <div class="tile is-8">
-        <input type="text" [(ngModel)]="queryString" />
-        <button class="button" (click)="search()">Search Songs</button>
-    </div> -->
+  </div>
 </section>

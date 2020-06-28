@@ -1,0 +1,16 @@
+// variables
+$body-bg: #343a40;
+$body-color: #f8f9fa;
+$link-color: #f8f9fa;
+$border-radius: 0;
+$border-radius-sm: 0;
+$border-radius-lg: 0;
+$success: #1DB954;
+$font-size-base: 1.25rem;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
+html, body {
+    height: 100%;
+}

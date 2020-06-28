@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  spotify_redirect_url: 'http://localhost:4200/owner'
+  spotify_redirect_url: 'http://localhost:4200/owner',
+  ws: 'wss://8o864yqzkc.execute-api.us-east-1.amazonaws.com/Prod'
 };
 
 /*

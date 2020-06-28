@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { UserInfo } from './user-info.model';
 import { Observable } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class SpotifyService {
   private readonly redirect_uri = environment.spotify_redirect_url;
   private readonly spotify_access_token_id = 'spotify_access_token'
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) {
     
   }
 
@@ -48,15 +49,19 @@ export class SpotifyService {
   }
 
   public getUserInfo(): Observable<UserInfo> {
-    return this.http.get<UserInfo>('https://api.spotify.com/v1/me', {headers: {'Authorization': 'Bearer ' + this.getAccessToken()}})
+    return this.http.get<UserInfo>('https://api.spotify.com/v1/me', this.getHeader())
   }
 
   public addSongToQueue(trackUri: String) {
-    this.http.post('https://api.spotify.com/v1/me/player/queue?uri=' + trackUri, {headers: {'Authorization': 'Bearer ' + this.getAccessToken()}})
+    this.http.post('https://api.spotify.com/v1/me/player/queue?uri=' + trackUri, this.getHeader())
   }
 
   public search(query: String) {
-    return this.http.get('https://api.spotify.com/v1/search?type=album,artist,track&q=' + query, {headers: {'Authorization': 'Bearer ' + this.getAccessToken()}});
+    return this.http.get('https://api.spotify.com/v1/search?type=track&q=' + query, this.getHeader());
+  }
+
+  private getHeader() {
+    return {headers: {'Authorization': 'Bearer ' + this.getAccessToken()}};
   }
 
   private getAccessToken(): string {
@@ -75,7 +80,11 @@ export class SpotifyService {
       localStorage.removeItem(this.stateKey);
       if (access_token) {
         localStorage.setItem(this.spotify_access_token_id, access_token);
-        window.location = window.location.pathname as unknown as Location;
+        this.router.navigate(
+          [], 
+          {
+            relativeTo: this.activatedRoute
+          });
       }
     }
   }
