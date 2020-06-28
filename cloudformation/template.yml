@@ -99,7 +99,7 @@ Resources:
   Certificate:
     Type: AWS::CertificateManager::Certificate
     Properties: 
-      DomainName: !Ref DNSRecord
+      DomainName: !Ref DomainName
       ValidationMethod: DNS
 
           
