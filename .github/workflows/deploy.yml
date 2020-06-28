@@ -49,6 +49,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Install lambda packages
+      working-directory: ./lambda_code/spotify-search
+      run: npm install
+
     - name: CF Package
       run: aws cloudformation package --template-file ./cloudformation/template.yml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-ka7nlc6hsejl --s3-prefix dance-party-lambdas --output-template-file ./cloudformation/packaged-template.yml
 

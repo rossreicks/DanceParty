@@ -1,0 +1,16 @@
+{
+  "name": "spotify-search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "spotify-search.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "qs": "^6.9.4"
+  }
+}
