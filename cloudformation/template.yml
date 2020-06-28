@@ -230,6 +230,8 @@ Resources:
     - ConnectRoute
     - CreatePartyRoute
     - DisconnectRoute
+    - QueueSongRoute
+    - SearchRoute
     Properties:
       ApiId: !Ref WebsocketApiGateway
   Stage:
@@ -237,6 +239,7 @@ Resources:
     Properties:
       StageName: Prod
       Description: Prod Stage
+      AutoDeploy: True
       DeploymentId: !Ref Deployment
       ApiId: !Ref WebsocketApiGateway
 
