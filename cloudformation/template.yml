@@ -4,6 +4,9 @@ Parameters:
   DomainName:
     Type: String
     Default: dance-party.rossreicks.com
+  TableName:
+    Type: String
+    Default: 'dance_party_connections'
 Resources:
   QueueRequestLambda:
     Type: AWS::Lambda::Function
@@ -111,4 +114,269 @@ Resources:
       DomainName: !Ref DomainName
       ValidationMethod: DNS
 
+  WebsocketApiGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: dance-party-websocket-api
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: $request.body.action
+      ApiKeySelectionExpression: $request.header.x-api-key
           
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: ConnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref ConnectInteg
+  ConnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OnConnectFunction.Arn}/invocations
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref DisconnectInteg
+
+  DisconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OnDisconnectFunction.Arn}/invocations
+
+  CreatePartyRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: createparty
+      AuthorizationType: NONE
+      OperationName: CreatePartyRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref CreatePartyInteg
+ CreatePartyInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Create Party Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreatePartyFunction.Arn}/invocations
+
+  QueueSongRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: queuesong
+      AuthorizationType: NONE
+      OperationName: QueueSongRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref QueueSongInteg
+  QueueSongInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Queue Song Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${QueueSongFunction.Arn}/invocations
+
+  SearchRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: search
+      AuthorizationType: NONE
+      OperationName: SearchRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref SearchInteg
+  SearchInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Search Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchFunction.Arn}/invocations
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+    - ConnectRoute
+    - CreatePartyRoute
+    - DisconnectRoute
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: Prod
+      Description: Prod Stage
+      DeploymentId: !Ref Deployment
+      ApiId: !Ref WebsocketApiGateway
+
+  ConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: "connectionId"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "connectionId"
+        KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref TableName
+
+  OnConnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda_code/
+      Handler: on-connect.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TableName
+
+  OnConnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref OnConnectFunction
+      Principal: apigateway.amazonaws.com
+
+  OnDisconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda_code/
+      Handler: on-disconnect.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TableName
+
+  OnDisconnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref OnDisconnectFunction
+      Principal: apigateway.amazonaws.com
+
+  CreatePartyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda_code/
+      Handler: create-party.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TableName
+
+  CreatePartyPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CreatePartyFunction
+      Principal: apigateway.amazonaws.com
+
+  SearchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda_code/
+      Handler: spotify-search.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TableName
+
+  SearchPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SearchFunction
+      Principal: apigateway.amazonaws.com
+
+  QueueSongFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda_code/
+      Handler: queue-song.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref TableName
+      - Statement:
+        - Effect: Allow
+          Action:
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebsocketApiGateway}/*'
+
+  QueueSongPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref QueueSongFunction
+      Principal: apigateway.amazonaws.com
