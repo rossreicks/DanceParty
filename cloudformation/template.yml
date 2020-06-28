@@ -1,5 +1,4 @@
 AWSTemplateFormatVersion: 2010-09-09
-Transform: AWS::Serverless-2016-10-31
 Description: Dance Party Stack
 Parameters:
   DomainName:
@@ -9,18 +8,6 @@ Parameters:
     Type: String
     Default: 'dance_party_connections'
 Resources:
-  QueueRequestLambda:
-    Type: AWS::Lambda::Function
-    Properties: 
-      Handler: index.handler
-      FunctionName: dance-party-queue-request
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
-      Runtime: nodejs12.x
-      Timeout: 5
-      Code: 
-        ZipFile: |
-          exports.handler = function(event, context) { console.log("hello lambda") }
-
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties: 
@@ -262,11 +249,12 @@ Resources:
       TableName: !Ref TableName
 
   OnConnectFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ../lambda_code/
+      Code: ../lambda_code/
       Handler: on-connect.handler
       MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -285,11 +273,12 @@ Resources:
       Principal: apigateway.amazonaws.com
 
   OnDisconnectFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ../lambda_code/
+      Code: ../lambda_code/
       Handler: on-disconnect.handler
       MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -308,11 +297,12 @@ Resources:
       Principal: apigateway.amazonaws.com
 
   CreatePartyFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ../lambda_code/
+      Code: ../lambda_code/
       Handler: create-party.handler
       MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -331,11 +321,12 @@ Resources:
       Principal: apigateway.amazonaws.com
 
   SearchFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ../lambda_code/
+      Code: ../lambda_code/
       Handler: spotify-search.handler
       MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -354,11 +345,12 @@ Resources:
       Principal: apigateway.amazonaws.com
 
   QueueSongFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ../lambda_code/
+      Code: ../lambda_code/
       Handler: queue-song.handler
       MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
       Runtime: nodejs12.x
       Environment:
         Variables:
