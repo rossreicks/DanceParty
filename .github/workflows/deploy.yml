@@ -49,8 +49,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: CF Package
+      run: aws cloudformation package --template-file ./cloudformation/template.yml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-ka7nlc6hsejl --s3-prefix dance-party-lambdas --output-template-file ./cloudformation/packaged-template.yml
+
     - name: CF Deploy
-      run: aws cloudformation deploy --template-file ./cloudformation/template.yml --stack-name dance-party --no-fail-on-empty-changeset
+      run: aws cloudformation deploy --template-file ./cloudformation/packaged-template.yml --stack-name dance-party --no-fail-on-empty-changeset
 
     - name: Install deps
       working-directory: ./sites/dance-party
