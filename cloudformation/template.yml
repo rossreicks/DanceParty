@@ -60,6 +60,10 @@ Resources:
           - !Ref DomainName
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
+        ViewerCertificate:
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1
+          AcmCertificateArn: !Ref Certificate
         DefaultCacheBehavior:
           TargetOriginId: s3-bucket
           ViewerProtocolPolicy: redirect-to-https
@@ -92,5 +96,10 @@ Resources:
             - 
               - !GetAtt CloudFront.DomainName
               - '.'
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: *.rossreicks.com
+      ValidationMethod: DNS
 
           
