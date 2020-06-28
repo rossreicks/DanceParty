@@ -248,7 +248,7 @@ Resources:
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: True
-      TableName: !Ref TableName
+      TableName: !Ref ConnectionTableName
 
   PartiesTable:
     Type: AWS::DynamoDB::Table
