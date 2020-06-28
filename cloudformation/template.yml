@@ -224,23 +224,23 @@ Resources:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchFunction.Arn}/invocations
 
-  Deployment:
-    Type: AWS::ApiGatewayV2::Deployment
-    DependsOn:
-    - ConnectRoute
-    - CreatePartyRoute
-    - DisconnectRoute
-    - QueueSongRoute
-    - SearchRoute
-    Properties:
-      ApiId: !Ref WebsocketApiGateway
+  # Deployment:
+  #   Type: AWS::ApiGatewayV2::Deployment
+  #   DependsOn:
+  #   - ConnectRoute
+  #   - CreatePartyRoute
+  #   - DisconnectRoute
+  #   - QueueSongRoute
+  #   - SearchRoute
+  #   Properties:
+  #     ApiId: !Ref WebsocketApiGateway
+
   Stage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
       StageName: Prod
       Description: Prod Stage
       AutoDeploy: True
-      DeploymentId: !Ref Deployment
       ApiId: !Ref WebsocketApiGateway
 
   ConnectionsTable:
