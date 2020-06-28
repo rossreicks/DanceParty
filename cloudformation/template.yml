@@ -108,7 +108,6 @@ Resources:
       Name: dance-party-websocket-api
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: $request.body.action
-      ApiKeySelectionExpression: $request.header.x-api-key
           
   ConnectRoute:
     Type: AWS::ApiGatewayV2::Route
