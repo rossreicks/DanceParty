@@ -57,7 +57,7 @@ Resources:
       DistributionConfig:
         Enabled: True
         Aliases:
-          - !Ref DomainName
+          - !Ref DNSRecord
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
         ViewerCertificate:
