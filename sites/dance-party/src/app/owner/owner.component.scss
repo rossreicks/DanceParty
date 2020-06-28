@@ -6,33 +6,33 @@
   margin-left: 15px;
 }
 
+@media screen and (max-width: 800px) {
+  section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+}
+
+@media screen and (min-width: 1200px) {
+  .qrcode {
+    margin: 100px;
+  }
+}
+
+.main-pane {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 20px;
+}
+
+ul {
+  li {
+    list-style: none;
+    margin: 5px;
+  }
+}
+
 section {
-  .main-pane {
-    h1 {
-      max-width: 500px;
-    }
-
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 20px;
-
-    .qrcode {
-      height: 200px;
-      width: 200px;
-      margin: 100px;
-    }
-  }
-
-  ul {
-    li {
-      list-style: none;
-      margin: 5px;
-    }
-  }
-
-  .artwork {
-    margin-right: 10px;
-  }
-
   height: 90vh;
 }

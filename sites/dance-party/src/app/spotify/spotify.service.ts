@@ -16,7 +16,7 @@ export class SpotifyService {
   private readonly spotify_access_token_id = 'spotify_access_token'
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) {
-    
+
   }
 
   public isAuthenticated(): boolean {
@@ -31,7 +31,7 @@ export class SpotifyService {
     const state = this.generateRandomString(16);
 
     localStorage.setItem(this.stateKey, state);
-    const scope = 'user-read-private user-read-email';
+    const scope = 'user-read-private user-read-email user-read-currently-playing user-read-playback-state user-modify-playback-state';
 
     let url: string = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
@@ -53,15 +53,19 @@ export class SpotifyService {
   }
 
   public addSongToQueue(trackUri: String) {
-    this.http.post('https://api.spotify.com/v1/me/player/queue?uri=' + trackUri, this.getHeader())
+    return this.http.post('https://api.spotify.com/v1/me/player/queue?uri=' + trackUri, {}, this.getHeader())
   }
 
   public search(query: String) {
     return this.http.get('https://api.spotify.com/v1/search?type=track&q=' + query, this.getHeader());
   }
 
+  public getCurrentPlaying(): Observable<any> {
+    return this.http.get('https://api.spotify.com/v1/me/player/currently-playing?market=us', this.getHeader())
+  }
+
   private getHeader() {
-    return {headers: {'Authorization': 'Bearer ' + this.getAccessToken()}};
+    return { headers: { 'Authorization': 'Bearer ' + this.getAccessToken() } };
   }
 
   private getAccessToken(): string {
@@ -70,8 +74,8 @@ export class SpotifyService {
 
   private parseQueryParams(params): void {
     const access_token = params.access_token,
-        state = params.state,
-        storedState = localStorage.getItem(this.stateKey);
+      state = params.state,
+      storedState = localStorage.getItem(this.stateKey);
 
     if (access_token && (state == null || state !== storedState)) {
       alert('There was an error during the authentication');
@@ -81,7 +85,7 @@ export class SpotifyService {
       if (access_token) {
         localStorage.setItem(this.spotify_access_token_id, access_token);
         this.router.navigate(
-          [], 
+          [],
           {
             relativeTo: this.activatedRoute
           });
@@ -111,8 +115,8 @@ export class SpotifyService {
   private getHashParams(): any {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while ( e = r.exec(q)) {
+      q = window.location.hash.substring(1);
+    while (e = r.exec(q)) {
       hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;

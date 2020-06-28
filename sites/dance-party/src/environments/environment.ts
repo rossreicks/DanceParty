@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  guest_url: 'http://localhost:4200/guest',
   spotify_redirect_url: 'http://localhost:4200/owner',
   ws: 'wss://8o864yqzkc.execute-api.us-east-1.amazonaws.com/Prod'
 };

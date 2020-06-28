@@ -10,12 +10,9 @@
       </div>
       <div class="d-flex flex-column justify-content-start">
         <ul>
-          <li *ngFor="let item of queue" class="d-flex">
-            <img class="artwork" [src]="item.artwork" alt="" height="64" width="64">
-            <div class="d-flex flex-column">
-              <h5>{{item.name}}</h5>
-              <p>{{item.artist}}</p>
-            </div>
+          <app-track *ngIf="currentSong" [track]=currentSong></app-track>
+          <li *ngFor="let item of queue">
+            <app-track [track]=item></app-track>
           </li>
         </ul>
       </div>

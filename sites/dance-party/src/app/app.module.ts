@@ -7,12 +7,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { OwnerComponent } from './owner/owner.component';
 import { AppRoutingModule } from './app-routing.module';
+import { TrackComponent } from './track/track.component';
+import { GuestComponent } from './guest/guest.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     OwnerComponent,
+    TrackComponent,
+    GuestComponent,
   ],
   imports: [
     BrowserModule,
