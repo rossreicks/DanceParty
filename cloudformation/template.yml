@@ -4,9 +4,12 @@ Parameters:
   DomainName:
     Type: String
     Default: dance-party.rossreicks.com
-  TableName:
+  ConnectionTableName:
     Type: String
     Default: 'dance_party_connections'
+  PartyTableName:
+    Type: String
+    Default: 'dance_party_parties'
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
@@ -247,6 +250,22 @@ Resources:
         SSEEnabled: True
       TableName: !Ref TableName
 
+  PartiesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: "partyId"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "partyId"
+        KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref PartyTableName
+
   OnConnectFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -257,7 +276,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_TABLE: !Ref PartyTableName
 
   OnConnectPermission:
     Type: AWS::Lambda::Permission
@@ -278,7 +298,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_TABLE: !Ref PartyTableName
 
   OnDisconnectPermission:
     Type: AWS::Lambda::Permission
@@ -299,7 +320,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_TABLE: !Ref PartyTableName
 
   CreatePartyPermission:
     Type: AWS::Lambda::Permission
@@ -320,7 +342,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_TABLE: !Ref PartyTableName
 
   SearchPermission:
     Type: AWS::Lambda::Permission
@@ -341,7 +364,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_TABLE: !Ref PartyTableName
 
   QueueSongPermission:
     Type: AWS::Lambda::Permission
