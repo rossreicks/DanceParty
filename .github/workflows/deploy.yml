@@ -57,7 +57,7 @@ jobs:
       run: aws cloudformation package --template-file ./cloudformation/template.yml --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-ka7nlc6hsejl --s3-prefix dance-party-lambdas --output-template-file ./cloudformation/packaged-template.yml
 
     - name: CF Deploy
-      run: aws cloudformation deploy --template-file ./cloudformation/packaged-template.yml --stack-name dance-party --no-fail-on-empty-changeset
+      run: aws cloudformation deploy --template-file ./cloudformation/packaged-template.yml --stack-name dance-party --no-fail-on-empty-changeset --parameter-overrides ClientId=${{ secrets.SPOTIFY_CLIENT_ID }} ClientSecret=${{ secrets.SPOTIFY_CLIENT_SECRET }}
 
     - name: Install deps
       working-directory: ./sites/dance-party
