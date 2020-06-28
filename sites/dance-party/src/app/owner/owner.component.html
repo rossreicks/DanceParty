@@ -1,16 +1,23 @@
 <section class="d-flex">
   <div class="flex-shrink-1 main-pane">
-    <img class="qrcode" *ngIf="imageUrl" [src]="imageUrl" alt="">
+    <div class="d-flex flex-column qrcode">
+      <img *ngIf="imageUrl" [src]="imageUrl" alt="">
+      <a [href]="guestUrl" target="_blank">go to guest page</a>
+    </div>
   </div>
   <div class="flex-grow-1 main-pane">
     <div class="d-flex flex-column">
       <div class="d-flex justify-content-center">
-        <h1>Party Name Here </h1>
+        <h1>{{partyName}}</h1>
         <i class="fa-sm fa fa-pencil-alt"></i>
       </div>
-      <div class="d-flex flex-column justify-content-start">
+      <div class="d-flex flex-column justify-content-start" id="queue">
         <ul>
-          <app-track *ngIf="currentSong" [track]=currentSong></app-track>
+          <h6>Currently playing</h6>
+          <li>
+            <app-track *ngIf="currentSong" [track]=currentSong></app-track>
+          </li>
+          <h6 *ngIf="queue.length">Queued</h6>
           <li *ngFor="let item of queue">
             <app-track [track]=item></app-track>
           </li>

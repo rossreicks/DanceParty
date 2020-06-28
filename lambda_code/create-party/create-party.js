@@ -6,7 +6,6 @@ const ddb = new AWS.DynamoDB.DocumentClient({
 });
 
 exports.handler = async event => {
-    console.log(JSON.stringify(event))
 
     const updateConnectionObject = async (connectionId, partyId) => {
         const queryParams = {
@@ -15,7 +14,10 @@ exports.handler = async event => {
                 connectionId
             }
         };
-        const connection = await ddb.getItem(queryParams).promise();
+        const connection = await ddb.get(queryParams).promise();
+        if (connection && connection.Item) {
+            connection = connection.Item;
+        }
         connection.partyId = partyId;
 
         const putParams = {
@@ -33,8 +35,9 @@ exports.handler = async event => {
                 partyId
             }
         };
-        const party = await ddb.getItem(queryParams).promise();
-        if (party) {
+        const party = await ddb.get(queryParams).promise();
+        if (party && party.Item) {
+            party = party.Item;
             party.owner.connectionId = connectionId;
         } else {
             party = {

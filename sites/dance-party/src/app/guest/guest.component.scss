@@ -1,0 +1,29 @@
+form {
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+ul {
+  height: 80%;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+ul::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (max-width: 800px) {
+  ul {
+    padding-left: 0px;
+  }
+
+  form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}

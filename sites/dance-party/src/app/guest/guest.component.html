@@ -1,1 +1,12 @@
-this is the party: {{partyId}}
+<section class="d-flex flex-column align-items-center" style="height: 90vh;">
+  <form class="d-flex" (ngSubmit)="search()">
+    <input class="form-control mr-2 flex-grow-2" type="search" placeholder="Search" aria-label="Search"
+      [(ngModel)]="query" name=search>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+  <ul>
+    <li *ngFor="let track of tracks">
+      <app-track [track]="track"></app-track>
+    </li>
+  </ul>
+</section>

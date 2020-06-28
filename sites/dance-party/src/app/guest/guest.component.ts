@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { GatewayService } from '../aws-gateway/gateway.service';
+import { Track } from '../track/track.component';
 
 @Component({
   selector: 'app-guest',
@@ -8,9 +10,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class GuestComponent implements OnInit, OnDestroy {
   private sub: any;
+  query: String = '';
   partyId: number;
+  tracks: Track[] = [];
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private gatewayService: GatewayService) { }
 
   ngOnInit(): void {
     this.sub = this.route.queryParams.subscribe(params => {
@@ -20,6 +24,12 @@ export class GuestComponent implements OnInit, OnDestroy {
         console.error('whoops') // redirect to party not found page
       }
     });
+  }
+
+  search() {
+    this.gatewayService.searchSong(this.query).then(x => {
+      this.tracks = x.splice(1, 7);
+    })
   }
 
   ngOnDestroy() {
