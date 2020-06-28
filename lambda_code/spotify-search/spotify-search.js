@@ -41,7 +41,7 @@ exports.handler = async event => {
   });
   await apigwManagementApi.postToConnection({
     ConnectionId: event.requestContext.connectionId,
-    Data: result.tracks.items
+    Data: JSON.stringify(result.data.tracks.items)
   }).promise();
 
   return {
