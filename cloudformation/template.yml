@@ -263,7 +263,7 @@ Resources:
   OnConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda_code/
+      CodeUri: ../lambda_code/
       Handler: on-connect.handler
       MemorySize: 256
       Runtime: nodejs12.x
@@ -286,7 +286,7 @@ Resources:
   OnDisconnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda_code/
+      CodeUri: ../lambda_code/
       Handler: on-disconnect.handler
       MemorySize: 256
       Runtime: nodejs12.x
@@ -309,7 +309,7 @@ Resources:
   CreatePartyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda_code/
+      CodeUri: ../lambda_code/
       Handler: create-party.handler
       MemorySize: 256
       Runtime: nodejs12.x
@@ -332,7 +332,7 @@ Resources:
   SearchFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda_code/
+      CodeUri: ../lambda_code/
       Handler: spotify-search.handler
       MemorySize: 256
       Runtime: nodejs12.x
@@ -355,7 +355,7 @@ Resources:
   QueueSongFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda_code/
+      CodeUri: ../lambda_code/
       Handler: queue-song.handler
       MemorySize: 256
       Runtime: nodejs12.x
