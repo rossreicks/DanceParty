@@ -66,16 +66,13 @@ Resources:
           AcmCertificateArn: !Ref Certificate
         CustomErrorResponses:
           -
-            Items:
-              -
-                ErrorCode: 403
-                ResponseCode: 200
-                ResponsePagePath: index.html
-              -
-                ErrorCode: 404
-                ResponseCode: 200
-                ResponsePagePath: index.html
-            Quantity: 1
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: index.html
+          -
+            ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: index.html
         DefaultCacheBehavior:
           TargetOriginId: s3-bucket
           ViewerProtocolPolicy: redirect-to-https
