@@ -28,10 +28,18 @@ exports.handler = async event => {
       apiVersion: '2018-11-29',
       endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
     });
-    await apigwManagementApi.postToConnection({
-      ConnectionId: connectionId,
-      Data: JSON.parse(event.body).trackUri
-    }).promise();
+    try {
+      await apigwManagementApi.postToConnection({
+        ConnectionId: connectionId,
+        Data: JSON.parse(event.body).trackUri
+      }).promise();
+    } catch (e) {
+      return {
+        statusCode: 500,
+        body: 'owner disconnected from party, unable to make queue request'
+      }
+    }
+
   }
 
   return {
