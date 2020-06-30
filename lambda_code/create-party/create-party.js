@@ -14,7 +14,7 @@ exports.handler = async event => {
                 connectionId
             }
         };
-        const connection = await ddb.get(queryParams).promise();
+        let connection = await ddb.get(queryParams).promise();
         if (connection && connection.Item) {
             connection = connection.Item;
         }
@@ -35,7 +35,7 @@ exports.handler = async event => {
                 partyId
             }
         };
-        const party = await ddb.get(queryParams).promise();
+        let party = await ddb.get(queryParams).promise();
         if (party && party.Item) {
             party = party.Item;
             party.owner.connectionId = connectionId;

@@ -286,7 +286,7 @@ Resources:
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
-          PARTY_TABLE_TABLE: !Ref PartyTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
 
   OnConnectPermission:
     Type: AWS::Lambda::Permission
@@ -308,7 +308,7 @@ Resources:
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
-          PARTY_TABLE_TABLE: !Ref PartyTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
 
   OnDisconnectPermission:
     Type: AWS::Lambda::Permission
@@ -330,7 +330,7 @@ Resources:
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
-          PARTY_TABLE_TABLE: !Ref PartyTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
 
   CreatePartyPermission:
     Type: AWS::Lambda::Permission
@@ -352,7 +352,7 @@ Resources:
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
-          PARTY_TABLE_TABLE: !Ref PartyTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
           CLIENT_ID: !Ref ClientId
           CLIENT_SECRET: !Ref ClientSecret
 
@@ -376,7 +376,7 @@ Resources:
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
-          PARTY_TABLE_TABLE: !Ref PartyTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
 
   QueueSongPermission:
     Type: AWS::Lambda::Permission
