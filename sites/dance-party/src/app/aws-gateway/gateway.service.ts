@@ -30,8 +30,12 @@ export class GatewayService {
 
     }
 
-    createParty(partyId: number) {
-        this.socket.subscribe(console.log, err => console.error(err), () => console.log('connection closed'));
+    createParty(partyId: number): Observable<any> {
         this.socket.next({ action: 'createparty', partyId });
+        return this.socket.asObservable();
+    }
+
+    queueSong(partyId: number, trackUri: String) {
+        this.socket.next({ action: 'queuesong', partyId, trackUri: trackUri })
     }
 }

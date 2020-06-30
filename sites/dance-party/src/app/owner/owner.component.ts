@@ -28,13 +28,17 @@ export class OwnerComponent implements OnInit, OnDestroy {
     this.spotifyService.getUserInfo().subscribe(x => {
       this.userData = x
       this.partyName = x.email.split('@')[0] + "'s party";
-      this.gatewayService.createParty(this.generateHash(this.userData.email));
+      this.gatewayService.createParty(this.generateHash(this.userData.email)).subscribe(x => {
+        if (x && x.trackUri) {
+          this.spotifyService.addSongToQueue(x.trackUri).subscribe(console.log)
+        }
+      });
       this.guestUrl = environment.guest_url + '?party_id=' + this.generateHash(this.userData.email);
       qrcode.toDataURL(this.guestUrl, (err, url) => {
         this.imageUrl = url;
       });
       this.fetchCurrentPlaying()
-      //this.spotifyService.addSongToQueue("spotify:track:2YpeDb67231RjR0MgVLzsG").subscribe(console.log)
+
     }, err => {
       if (err.status == 401) {
         this.spotifyService.logout();
