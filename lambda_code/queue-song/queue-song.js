@@ -1,3 +1,10 @@
+const AWS = require('aws-sdk');
+
+const ddb = new AWS.DynamoDB.DocumentClient({
+  apiVersion: '2012-08-10',
+  region: process.env.AWS_REGION
+});
+
 exports.handler = async event => {
   // fetch party owner connection id
   const partyId = JSON.parse(event.body).partyId;
@@ -30,8 +37,10 @@ exports.handler = async event => {
     });
     try {
       await apigwManagementApi.postToConnection({
-        ConnectionId: connectionId,
-        Data: JSON.parse(event.body).trackUri
+        ConnectionId: ownerConnectionId,
+        Data: JSON.stringify({
+          trackUri: JSON.parse(event.body).trackUri
+        })
       }).promise();
     } catch (e) {
       return {
