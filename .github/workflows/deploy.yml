@@ -69,4 +69,7 @@ jobs:
     
     - name: Upload site to s3
       run: aws s3 sync ./sites/dance-party/dist/dance-party s3://reicksross-dance-party-static-content --delete
+
+    - name: Invalidate Cache
+      run: aws cloudfront create-invalidation --distribution-id E1WREWUDWDJNXT --paths "/main.*.js" "/styles.*.css" "/runtime.*.js" "/index.html" "/polyfills.*.js"
       
