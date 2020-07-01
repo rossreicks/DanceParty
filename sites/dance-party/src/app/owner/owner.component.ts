@@ -38,10 +38,12 @@ export class OwnerComponent implements OnInit, OnDestroy {
       this.gatewayService.getMessageQueue().subscribe(x => {
         if (x && x.track) {
           const track = x.track as Track
-          this.spotifyService.addSongToQueue(track.uri).subscribe(y => {
-            this.queue.push(track)
-            this.syncQueue()
-          });
+          if (!this.queue.map(x => x.uri).includes(track.uri)) {
+            this.spotifyService.addSongToQueue(track.uri).subscribe(y => {
+              this.queue.push(track)
+              this.syncQueue()
+            });
+          }
         }
       })
       this.guestUrl = environment.guest_url + '?party_id=' + this.generateHash(this.userData.email);
@@ -91,7 +93,7 @@ export class OwnerComponent implements OnInit, OnDestroy {
       })
     }
     getCurrentPlaying();
-    this.intervalSubscription = interval(10000).subscribe(() => {
+    this.intervalSubscription = interval(5000).subscribe(() => {
       getCurrentPlaying();
     });
   }
