@@ -12,7 +12,8 @@ export class SpotifyService {
 
   private readonly stateKey = 'spotify_auth_state';
   private readonly client_id = 'c4a6147048f84df5b83b9e3034904753';
-  private readonly redirect_uri = environment.spotify_redirect_url;
+  //private readonly redirect_uri = environment.spotify_redirect_url;
+  private readonly redirect_uri = window.location + '/party';
   private readonly spotify_access_token_id = 'spotify_access_token'
 
   constructor(private http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) {
