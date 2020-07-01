@@ -39,7 +39,7 @@ exports.handler = async event => {
       await apigwManagementApi.postToConnection({
         ConnectionId: ownerConnectionId,
         Data: JSON.stringify({
-          trackUri: JSON.parse(event.body).trackUri
+          track: JSON.parse(event.body).track
         })
       }).promise();
     } catch (e) {

@@ -28,7 +28,7 @@ exports.handler = async event => {
         await ddb.put(putParams).promise();
     }
 
-    const updatePartyObject = async (connectionId, partyId) => {
+    const updatePartyObject = async (connectionId, partyId, partyName) => {
         const queryParams = {
             TableName: process.env.PARTY_TABLE_NAME,
             Key: {
@@ -38,10 +38,12 @@ exports.handler = async event => {
         let party = await ddb.get(queryParams).promise();
         if (party && party.Item) {
             party = party.Item;
+            party.partyName = partyName;
             party.owner.connectionId = connectionId;
         } else {
             party = {
                 partyId,
+                partyName,
                 owner: {
                     connectionId
                 },
@@ -55,14 +57,27 @@ exports.handler = async event => {
         };
 
         await ddb.put(putParams).promise();
+        return party;
     }
 
     try {
         const connectionId = event.requestContext.connectionId;
         const partyId = JSON.parse(event.body).partyId;
+        const partyName = JSON.parse(event.body).partyName;
 
         await updateConnectionObject(connectionId, partyId);
-        await updatePartyObject(connectionId, partyId);
+        const party = await updatePartyObject(connectionId, partyId, partyName);
+
+        // send search results back to requester
+        const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+            apiVersion: '2018-11-29',
+            endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+        });
+        await apigwManagementApi.postToConnection({
+            ConnectionId: event.requestContext.connectionId,
+            Data: JSON.stringify(party)
+        }).promise();
+
     } catch (err) {
         return {
             statusCode: 500,

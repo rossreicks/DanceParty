@@ -224,16 +224,26 @@ Resources:
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SearchFunction.Arn}/invocations
 
-  # Deployment:
-  #   Type: AWS::ApiGatewayV2::Deployment
-  #   DependsOn:
-  #   - ConnectRoute
-  #   - CreatePartyRoute
-  #   - DisconnectRoute
-  #   - QueueSongRoute
-  #   - SearchRoute
-  #   Properties:
-  #     ApiId: !Ref WebsocketApiGateway
+  SyncQueueRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      RouteKey: syncqueue
+      AuthorizationType: NONE
+      OperationName: SyncQueueRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref SyncQueueInteg
+  SyncQueueInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebsocketApiGateway
+      Description: Sync Queue Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SyncQueueFunction.Arn}/invocations
 
   Stage:
     Type: AWS::ApiGatewayV2::Stage
@@ -363,6 +373,30 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref SearchFunction
+      Principal: apigateway.amazonaws.com
+
+  SyncQueueFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: ../lambda_code/sync-queue/
+      Handler: sync-queue.handler
+      MemorySize: 256
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/dance-party-lambda-role
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+          PARTY_TABLE_NAME: !Ref PartyTableName
+          CLIENT_ID: !Ref ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+
+  SyncQueuePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebsocketApiGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SyncQueueFunction
       Principal: apigateway.amazonaws.com
 
   QueueSongFunction:

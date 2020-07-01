@@ -37,7 +37,7 @@ export class GuestComponent implements OnInit, OnDestroy {
   }
 
   queueSong(track: Track) {
-    this.gatewayService.queueSong(this.partyId, track.uri);
+    this.gatewayService.queueSong(this.partyId, track);
   }
 
 }
