@@ -83,9 +83,10 @@ export class SpotifyService {
     } else {
       localStorage.removeItem(this.stateKey);
       if (access_token) {
+        console.log(this.activatedRoute.url)
         localStorage.setItem(this.spotify_access_token_id, access_token);
         this.router.navigate(
-          [],
+          ['party'],
           {
             relativeTo: this.activatedRoute
           });

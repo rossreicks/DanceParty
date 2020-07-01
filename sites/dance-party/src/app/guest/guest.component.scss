@@ -17,6 +17,11 @@ ul::-webkit-scrollbar {
   display: none;
 }
 
+.alert {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
 @media screen and (max-width: 800px) {
   ul {
     padding-left: 0px;

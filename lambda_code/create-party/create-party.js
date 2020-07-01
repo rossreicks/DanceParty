@@ -38,7 +38,9 @@ exports.handler = async event => {
         let party = await ddb.get(queryParams).promise();
         if (party && party.Item) {
             party = party.Item;
-            party.partyName = partyName;
+            if (partyName) {
+                party.partyName = partyName;
+            }
             party.owner.connectionId = connectionId;
         } else {
             party = {

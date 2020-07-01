@@ -5,14 +5,14 @@ import { GatewayService, Party } from '../aws-gateway/gateway.service';
 import * as qrcode from 'qrcode';
 import { Track } from '../track/track.component';
 import { environment } from '../../environments/environment';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-owner',
-  templateUrl: './owner.component.html',
-  styleUrls: ['./owner.component.scss']
+  selector: 'app-party',
+  templateUrl: './party.component.html',
+  styleUrls: ['./party.component.scss']
 })
-export class OwnerComponent implements OnInit, OnDestroy {
+export class PartyComponent implements OnInit, OnDestroy {
   userData: UserInfo;
   guestUrl: String;
   imageUrl: String;
@@ -20,25 +20,21 @@ export class OwnerComponent implements OnInit, OnDestroy {
   currentSong: Track;
   queue: Track[] = [];
   party: Party
-  intervalSubscription: any;
-  queueSyncInterval: any;
-  partyName: String = 'Party Name Here';
+  intervalSubscription: Subscription;
+  partyName: String = '';
+  messageSubscription: Subscription;
+  showInput = false;
 
   constructor(private spotifyService: SpotifyService, private gatewayService: GatewayService) { }
 
   ngOnInit(): void {
     this.spotifyService.getUserInfo().subscribe(x => {
       this.userData = x
-      this.partyName = x.email.split('@')[0] + "'s party";
-      this.gatewayService.createParty(this.generateHash(this.userData.email), this.partyName).then(x => {
-        this.party = x;
-        this.queue = this.party.queue;
-        this.partyName = this.partyName;
-      })
-      this.gatewayService.getMessageQueue().subscribe(x => {
+      this.updateParty()
+      this.messageSubscription = this.gatewayService.getMessageQueue().subscribe(x => {
         if (x && x.track) {
           const track = x.track as Track
-          if (!this.queue.map(x => x.uri).includes(track.uri)) {
+          if (!this.queue.map(x => x.uri).includes(track.uri) && this.currentSong.uri != track.uri) {
             this.spotifyService.addSongToQueue(track.uri).subscribe(y => {
               this.queue.push(track)
               this.syncQueue()
@@ -59,8 +55,25 @@ export class OwnerComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateParty(): void {
+    this.gatewayService.createParty(this.generateHash(this.userData.email), this.partyName).then(x => {
+      this.party = x;
+      this.queue = this.party.queue;
+      this.partyName = this.party.partyName;
+      if (!this.partyName) {
+        this.partyName = this.userData.email.split('@')[0] + "'s party";
+      }
+    })
+  }
+
   ngOnDestroy(): void {
     this.intervalSubscription.unsubscribe();
+    this.messageSubscription.unsubscribe();
+  }
+
+  editPartyName(): void {
+    this.showInput = false;
+    this.updateParty()
   }
 
   syncQueue() {

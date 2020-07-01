@@ -8,8 +8,11 @@
   <div class="flex-grow-1 main-pane">
     <div class="d-flex flex-column">
       <div class="d-flex justify-content-center">
-        <h1>{{partyName}}</h1>
-        <i class="fa-sm fa fa-pencil-alt"></i>
+        <h1 *ngIf="!showInput">{{partyName}}</h1>
+        <i class="fa-sm fa fa-pencil-alt" *ngIf="!showInput" (click)="showInput = true"></i>
+
+        <input *ngIf="showInput" class="form-control" type="text" [(ngModel)]="partyName" />
+        <button class="btn btn-success" *ngIf="showInput" (click)="editPartyName()">Save</button>
       </div>
       <div class="d-flex flex-column justify-content-start" id="queue">
         <ul>

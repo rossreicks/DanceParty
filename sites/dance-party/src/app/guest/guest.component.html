@@ -1,11 +1,12 @@
 <section class="d-flex flex-column align-items-center" style="height: 90vh;">
+  <div class="alert alert-success" *ngIf="showAlert">Song Queued</div>
   <form class="d-flex" (ngSubmit)="search()">
-    <input class="form-control mr-2 flex-grow-2" type="search" placeholder="Search" aria-label="Search"
-      [(ngModel)]="query" name=search>
+    <input class=" form-control mr-2 flex-grow-2" type="search" placeholder="Search" aria-label="Search"
+      [(ngModel)]="query" (keyup)="searchKey()" name=search>
     <button class="btn btn-outline-success" type="submit">Search</button>
   </form>
   <ul>
-    <li *ngFor="let track of tracks">
+    <li *ngFor="let track of tracks | async">
       <app-track (click)="queueSong(track)" [track]="track"></app-track>
     </li>
   </ul>
