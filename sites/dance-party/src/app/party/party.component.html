@@ -8,7 +8,7 @@
   <div class="flex-grow-1 main-pane">
     <div class="d-flex flex-column">
       <div class="d-flex justify-content-center">
-        <h1 *ngIf="!showInput">{{partyName}}</h1>
+        <h1 *ngIf="!showInput">{{!partyName ? 'Party Name Loading...' : partyName}}</h1>
         <i class="fa-sm fa fa-pencil-alt" *ngIf="!showInput" (click)="showInput = true"></i>
 
         <input *ngIf="showInput" class="form-control" type="text" [(ngModel)]="partyName" />
@@ -18,7 +18,7 @@
         <ul>
           <h6>Currently playing</h6>
           <li>
-            <div *ngIf=!currentSong>
+            <div *ngIf=!currentSong style="padding: 10px">
               It looks like you don't have a track playing.
               <br>Start Spotify connected to your favorite device to allow
               your guests to pick your music!
