@@ -18,6 +18,11 @@
         <ul>
           <h6>Currently playing</h6>
           <li>
+            <div *ngIf=!currentSong>
+              It looks like you don't have a track playing.
+              <br>Start Spotify connected to your favorite device to allow
+              your guests to pick your music!
+            </div>
             <app-track *ngIf="currentSong" [track]=currentSong></app-track>
           </li>
           <h6 *ngIf="queue.length">Queued</h6>
